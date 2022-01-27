@@ -1,25 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/Navbar';
+import CountriesList from './components/CountriesList';
+import CountryDetails from './components/CountryDetails';
+import { Routes, Route, Outlet } from 'react-router-dom';
+// import allCountries from "./countries.json"
+import React, {useEffect, useState} from "react"
+import axios from "axios"
 
 function App() {
+  const [allCountries, setAllCountries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get("https://ih-countries-api.herokuapp.com/countries")
+    .then(countriesFetched => {
+      setAllCountries(countriesFetched.data.sort((a, b) => a.name.common.localeCompare(b.name.common)));
+      setLoading(!loading);
+    })
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      {loading && <img src="https://media.makeameme.org/created/data-dataeverywhere.jpg" alt="data-everywhere"/>}
+
+      <Navbar />
+
+      <div className="d-flex flex-wrap">
+        <CountriesList allCountries={allCountries}/>
+        <Outlet />
+      </div>
+
+      <Routes>
+        <Route path="/:countryAlpha3Code" element={<CountryDetails allCountries={allCountries} />} />
+      </Routes>
     </div>
   );
 }
-
 export default App;
