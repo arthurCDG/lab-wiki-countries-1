@@ -2,7 +2,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import CountriesList from './components/CountriesList';
 import CountryDetails from './components/CountryDetails';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 // import allCountries from "./countries.json"
 import React, {useEffect, useState} from "react"
 import axios from "axios"
@@ -26,14 +26,14 @@ function App() {
 
       <Navbar />
 
-      <div className="d-flex flex-wrap">
-        <CountriesList allCountries={allCountries}/>
-        <Outlet />
+      <div className="container">
+        <div className='row'>
+          <CountriesList allCountries={allCountries}/>
+          <Routes>
+            <Route path="/:countryAlpha3Code" element={<CountryDetails allCountries={allCountries} />} />
+          </Routes>
+        </div>
       </div>
-
-      <Routes>
-        <Route path="/:countryAlpha3Code" element={<CountryDetails allCountries={allCountries} />} />
-      </Routes>
     </div>
   );
 }
